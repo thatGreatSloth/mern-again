@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie.js";
 import { User } from "../models/user/user.model.js";
+import { sendVerificationEmail } from "../mailconfig/emails.js";
 
 export const signup = async (req, res) => {
   //get details from request body
@@ -36,6 +37,9 @@ export const signup = async (req, res) => {
 
     //create token
     generateTokenAndSetCookie(res, user._id); //mongoose gives _id to every document
+   await sendVerificationEmail(user.email, verificationToken)
+
+   
     res.status(201).json({
       success: true,
       message: "User created successfully",
